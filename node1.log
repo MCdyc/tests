@@ -1,0 +1,34 @@
+2026-01-15 19:47:52.173121 I | dragonboat: go version: go1.25.3, windows/amd64
+2026-01-15 19:47:52.217378 I | dragonboat: dragonboat version: 4.0.0 (Dev)
+2026-01-15 19:47:52.217378 W | dragonboat: unsupported OS/ARCH windows/amd64, don't use for production
+2026-01-15 19:47:52.217909 W | config: mutual TLS disabled, communication is insecure
+2026-01-15 19:47:52.217909 I | config: using default EngineConfig
+2026-01-15 19:47:52.217909 I | config: using default LogDBConfig
+2026-01-15 19:47:52.217909 I | dragonboat: DeploymentID set to 1
+2026-01-15 19:47:52.249637 I | dragonboat: LogDB info received, shard 0, busy false
+2026-01-15 19:47:52.262997 I | dragonboat: LogDB info received, shard 1, busy false
+2026-01-15 19:47:52.276090 I | dragonboat: LogDB info received, shard 2, busy false
+2026-01-15 19:47:52.288954 I | dragonboat: LogDB info received, shard 3, busy false
+2026-01-15 19:47:52.302282 I | dragonboat: LogDB info received, shard 4, busy false
+2026-01-15 19:47:52.314946 I | dragonboat: LogDB info received, shard 5, busy false
+2026-01-15 19:47:52.328251 I | dragonboat: LogDB info received, shard 6, busy false
+2026-01-15 19:47:52.340588 I | dragonboat: LogDB info received, shard 7, busy false
+2026-01-15 19:47:52.354427 I | dragonboat: LogDB info received, shard 8, busy false
+2026-01-15 19:47:52.368195 I | dragonboat: LogDB info received, shard 9, busy false
+2026-01-15 19:47:52.382171 I | dragonboat: LogDB info received, shard 10, busy false
+2026-01-15 19:47:52.395010 I | dragonboat: LogDB info received, shard 11, busy false
+2026-01-15 19:47:52.408897 I | dragonboat: LogDB info received, shard 12, busy false
+2026-01-15 19:47:52.421650 I | dragonboat: LogDB info received, shard 13, busy false
+2026-01-15 19:47:52.434479 I | dragonboat: LogDB info received, shard 14, busy false
+2026-01-15 19:47:52.448842 I | dragonboat: LogDB info received, shard 15, busy false
+2026-01-15 19:47:52.448842 I | logdb: using plain logdb
+2026-01-15 19:47:52.450940 I | dragonboat: logdb memory limit: 8192 MBytes
+2026-01-15 19:47:52.452550 I | dragonboat: NodeHost ID: da82d51a-c6b2-4d16-a964-e4cd8b0bd103
+2026-01-15 19:47:52.452550 I | dragonboat: using regular node registry
+2026-01-15 19:47:52.452550 I | dragonboat: filesystem error injection mode enabled: false
+2026-01-15 19:47:52.455806 E | transport: transport failed to start listen tcp 127.0.0.1:63001: bind: An attempt was made to access a socket in a way forbidden by its access permissions.
+panic: listen tcp 127.0.0.1:63001: bind: An attempt was made to access a socket in a way forbidden by its access permissions.
+
+goroutine 1 [running]:
+main.main()
+	D:/Codefield/suiyi/tests/main.go:59 +0x52f
