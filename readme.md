@@ -1,0 +1,5 @@
+测试代码为bench目录下的Rust代码，使用Dragonboat作为Raft实现的服务端进行压测。
+同时改代码基于openraft的服务端开发，理论不需要对openraft下example的raft-kv-rocksdb进行修改即可运行。
+基于同一个客户端代码，启动指定dragonboat服务端进行压测。
+最后可能卡了cpu瓶颈，导致性能一致
+注意，raft-kv-rocksdb不需要修改，直接运行即可。
