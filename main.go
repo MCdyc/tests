@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -21,7 +22,7 @@ import (
 // 命令行参数
 var (
 	nodeID   = flag.Int("nodeid", 1, "Raft Node ID")
-	addr     = flag.String("addr", "127.0.0.1:63001", "Raft 内部通信地址 (IP:Port)")
+	addr     = flag.String("addr", "127.0.0.1:30001", "Raft 内部通信地址 (IP:Port)")
 	httpAddr = flag.String("http", ":21001", "HTTP API 监听地址 (IP:Port)")
 	join     = flag.Bool("join", false, "是否加入现有集群")
 )
@@ -62,9 +63,9 @@ func main() {
 
 	// 3. 定义集群成员
 	initialMembers := map[uint64]string{
-		1: "127.0.0.1:63001",
-		2: "127.0.0.1:63002",
-		3: "127.0.0.1:63003",
+		1: "127.0.0.1:30001",
+		2: "127.0.0.1:30002",
+		3: "127.0.0.1:30003",
 	}
 	if *join {
 		initialMembers = nil
@@ -111,7 +112,12 @@ func startHTTPServer(nh *dragonboat.NodeHost, shardID uint64) {
 
 	http.HandleFunc("/read", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
-		key := string(body)
+		// Rust客户端发送的是JSON格式的key，需要解析
+		var key string
+		if err := json.Unmarshal(body, &key); err != nil {
+			// 如果解析失败，尝试直接使用body作为key
+			key = string(body)
+		}
 
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 		defer cancel()

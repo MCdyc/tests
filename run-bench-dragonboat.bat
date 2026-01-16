@@ -2,25 +2,25 @@
 setlocal EnableDelayedExpansion
 
 :: ================= 配置 =================
-:: Go 服务端文件名
+:: Go 服务器可执行文件
 set SERVER_BIN=dragonboat-server.exe
-:: Rust 客户端路径 (请根据实际情况修改路径)
+:: Rust 基准测试路径 (注意路径为相对路径)
 set BENCH_BIN=bench\target\release\bench.exe
 
-:: 端口配置 (必须与 main.go 中的 initialMembers 对应)
-set NODE1_RAFT=127.0.0.1:63001
+:: 集群节点地址 (需与 main.go 中的 initialMembers 对应)
+set NODE1_RAFT=127.0.0.1:30001
 set NODE1_HTTP=127.0.0.1:21001
 
-set NODE2_RAFT=127.0.0.1:63002
+set NODE2_RAFT=127.0.0.1:30002
 set NODE2_HTTP=127.0.0.1:21002
 
-set NODE3_RAFT=127.0.0.1:63003
+set NODE3_RAFT=127.0.0.1:30003
 set NODE3_HTTP=127.0.0.1:21003
 
-:: 接收参数
+:: 处理命令行参数
 if "%1"=="" goto run
 if "%1"=="clean" goto clean
-echo 未知命令: %1
+echo 未知参数: %1
 exit /b 1
 
 :: ================= 功能模块 =================
@@ -39,7 +39,7 @@ exit /b 1
 
 :start_cluster
     if not exist "%SERVER_BIN%" (
-        echo 错误: 找不到 %SERVER_BIN%，请先执行 go build -o %SERVER_BIN% .
+        echo 错误: 找不到 %SERVER_BIN%，请确保已执行 go build -o %SERVER_BIN% .
         exit /b 1
     )
 
@@ -52,32 +52,32 @@ exit /b 1
     echo [集群] 启动 Node 3 (ID=3, HTTP=:21003)...
     start /b "" "%SERVER_BIN%" -nodeid 3 -addr %NODE3_RAFT% -http :21003 > node3.log 2>&1
 
-    echo [集群] 等待选主 (10秒)...
+    echo [集群] 等待选举完成 (10秒)...
     timeout /t 10 /nobreak >nul
     
-    :: 简单的健康检查
-    echo [集群] 检查 Leader 连通性...
+    :: 简单的 Leader 连通性检查
+    echo [集群] 尝试连接 Leader 节点...
     curl -s http://%NODE1_HTTP%/read -d "test_check" >nul 2>&1
     if %errorlevel% neq 0 (
-        echo 警告: 无法连接到 Node 1，集群可能未启动成功。请查看 node1.log。
+        echo 警告: 无法连接到 Node 1，集群可能未就绪，请检查 node1.log。
     ) else (
-        echo [集群] 集群似乎已就绪。
+        echo [集群] 集群似乎已就绪
     )
     exit /b 0
 
 :run_benchmark
-    echo [测试] 运行 Rust 客户端压测...
+    echo [基准] 开始 Rust 客户端压测...
     cd bench
     cargo build --release
     cd ..
     if not exist "%BENCH_BIN%" (
-        echo 错误: 找不到测试工具 %BENCH_BIN%
-        echo 请检查路径或执行 cargo build --release
+        echo 错误: 找不到编译后的文件 %BENCH_BIN%
+        echo 请确保路径正确并执行 cargo build --release
         exit /b 1
     )
 
-    :: 运行参数: 200 客户端, 每个 10000 请求, 写操作
-    "%BENCH_BIN%" --server http://%NODE1_HTTP% --clients 200 --requests 10000 --test-type write 
+    :: 基准测试参数: 200 个客户端, 每个 10000 个请求, 写入测试
+    "%BENCH_BIN%" --server http://%NODE1_HTTP% --clients 20 --requests 1000 --test-type mixed --write-ratio 0.5 
     
     exit /b 0
 

@@ -37,7 +37,7 @@ func (s *KVStateMachine) Update(entry sm.Entry) (sm.Result, error) {
 	// 注意：数据现在存储在 entry.Cmd 中
 	var req OpenRaftRequest
 	if err := json.Unmarshal(entry.Cmd, &req); err != nil {
-		return sm.Result{}, nil
+		return sm.Result{}, err
 	}
 
 	if req.Set != nil {
